@@ -7,11 +7,11 @@ const UpdateChallengeHandler: Handler = async (req, res, next) => {
 	try {
 		const reqBody = req.body as Request.UpdateChallengeRequest
 
-		const challenge = await ChallengeModel.findOne({ _id: reqBody._id })
-		const challengeDetails = await ChallengeDetailsModel.findOne({
-			_id: challenge?.challengeDetails,
-		})
-		const testcases = await TestCaseModel.find({ challengeId: challenge?._id })
+		const challenge = await ChallengeModel.findById(reqBody._id)
+		const challengeDetails = await ChallengeDetailsModel.findById(
+			challenge?.challengeDetails
+		)
+		const testcases = reqBody.testcases
 
 		if (!challenge || !challengeDetails || !testcases) {
 			throw new Error()
@@ -26,12 +26,29 @@ const UpdateChallengeHandler: Handler = async (req, res, next) => {
 		challengeDetails.set("exampleTestCases", reqBody.exampleTestCases)
 		challengeDetails.set("constraints", reqBody.constraints)
 
-		// TODO: update constraints
+		const testcasesToUpdate = testcases
+			.filter((test) => test._id)
+			.map((test) => new TestCaseModel({ ...test }))
+		const testcasesToInsert = testcases
+			.filter((test) => !test._id)
+			.map((test) => new TestCaseModel({ ...test, challengeId: challenge._id }))
+
 		await challenge.save()
 		await challengeDetails.save()
+		testcasesToUpdate.forEach(async (test) => {
+			await TestCaseModel.findByIdAndUpdate(test._id, {
+				$set: {
+					challengeId: challenge._id,
+					input: test.input,
+					expectedOutput: test.expectedOutput,
+				},
+			})
+		})
+		await TestCaseModel.bulkSave(testcasesToInsert)
 
 		next()
-	} catch {
+	} catch (err) {
+		console.log(err)
 		next(new ApiError("Failed to update challenge!", HttpCode.BAD_REQUEST))
 	}
 }

@@ -7,6 +7,11 @@ declare namespace Request {
 		nickname: string
 	}
 
+	declare type PagingRequest = {
+		page: number
+		pageSize: number
+	}
+
 	declare type SignIn = {
 		nickname: string
 		password: string
@@ -42,9 +47,15 @@ declare namespace Request {
 		constraints: string[]
 		testcases: {
 			_id?: string
-			problemId?: string
+			challengeId?: string
 			input: string
 			expectedOutput: string
 		}[]
+	}
+
+	declare type ChallengeFilterRequest = PagingRequest & {
+		title?: string
+		difficulty?: Difficulty
+		tags?: Tag[]
 	}
 }
