@@ -3,14 +3,16 @@ import connectDB from "./db/connect"
 import initRoute from "./routes"
 import { ResponseHandler, ErrorHandler } from "./middlewares"
 import dotenv from "dotenv"
+import cors from "cors"
 
 const app = express()
 const port = 3001
 
 dotenv.config()
 
-app.use(express.urlencoded({ extended: true }))
+app.use(cors())
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 initRoute(app)
 
