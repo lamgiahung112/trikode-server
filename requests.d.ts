@@ -27,9 +27,9 @@ declare namespace Request {
 		tags: Tag[]
 		description: string
 		predefinedCode: string
-		exampleTestCases: { imageUrl?: string; input: string; expectedOutput: string }[]
+		exampleTestCases: ExampleTestCase[]
 		constraints: string[]
-		testcases: { input: string; expectedOutput: string }[]
+		testcases: TestCase[]
 	}
 
 	declare type UpdateChallengeRequest = {
@@ -39,18 +39,9 @@ declare namespace Request {
 		tags: Tag[]
 		description: string
 		predefinedCode: string
-		exampleTestCases: {
-			imageUrl?: string
-			input: string
-			expectedOutput: string
-		}[]
+		exampleTestCases: ExampleTestCase[]
 		constraints: string[]
-		testcases: {
-			_id?: string
-			challengeId?: string
-			input: string
-			expectedOutput: string
-		}[]
+		testcases: TestCase[]
 	}
 
 	declare type ChallengeFilterRequest = PagingRequest & {

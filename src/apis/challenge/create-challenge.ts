@@ -1,7 +1,8 @@
-import { ChallengeDetailsModel, ChallengeModel, TestCaseModel } from "@src/db/mongoose"
+import { ChallengeDetailsModel, ChallengeModel } from "@src/db/mongoose"
 import ApiError from "@src/utils/api-error"
 import HttpCode from "@src/utils/http-code"
 import { Handler } from "express"
+import fs from "fs"
 
 const CreateChallengeHandler: Handler = async (req, res, next) => {
 	try {
@@ -28,11 +29,17 @@ const CreateChallengeHandler: Handler = async (req, res, next) => {
 		})
 
 		const savedChallenge = await challenge.save()
-		const testcases = reqBody.testcases.map(
-			(test) =>
-				new TestCaseModel({ ...test, problemId: savedChallenge._id.toString() })
+
+		const testWriter = fs.createWriteStream(
+			`/tests/${savedChallenge._id.toString()}.json`,
+			{
+				autoClose: true,
+			}
 		)
-		await TestCaseModel.bulkSave(testcases)
+		testWriter.on("error", () => {
+			throw new Error()
+		})
+		testWriter.write(JSON.stringify(reqBody.testcases))
 
 		res.locals = {
 			payload: savedChallenge,

@@ -1,7 +1,8 @@
-import { ChallengeDetailsModel, ChallengeModel, TestCaseModel } from "@src/db/mongoose"
+import { ChallengeDetailsModel, ChallengeModel } from "@src/db/mongoose"
 import ApiError from "@src/utils/api-error"
 import HttpCode from "@src/utils/http-code"
 import { Handler } from "express"
+import fs from "fs"
 
 const UpdateChallengeHandler: Handler = async (req, res, next) => {
 	try {
@@ -26,25 +27,19 @@ const UpdateChallengeHandler: Handler = async (req, res, next) => {
 		challengeDetails.set("exampleTestCases", reqBody.exampleTestCases)
 		challengeDetails.set("constraints", reqBody.constraints)
 
-		const testcasesToUpdate = testcases
-			.filter((test) => test._id)
-			.map((test) => new TestCaseModel({ ...test }))
-		const testcasesToInsert = testcases
-			.filter((test) => !test._id)
-			.map((test) => new TestCaseModel({ ...test, challengeId: challenge._id }))
-
 		await challenge.save()
 		await challengeDetails.save()
-		testcasesToUpdate.forEach(async (test) => {
-			await TestCaseModel.findByIdAndUpdate(test._id, {
-				$set: {
-					challengeId: challenge._id,
-					input: test.input,
-					expectedOutput: test.expectedOutput,
-				},
-			})
+
+		const testWriter = fs.createWriteStream(
+			`/tests/${challenge._id.toString()}.json`,
+			{
+				autoClose: true,
+			}
+		)
+		testWriter.on("error", () => {
+			throw new Error()
 		})
-		await TestCaseModel.bulkSave(testcasesToInsert)
+		testWriter.write(JSON.stringify(reqBody.testcases))
 
 		next()
 	} catch (err) {

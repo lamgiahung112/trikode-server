@@ -11,15 +11,12 @@ declare type Difficulty = "EASY" | "MEDIUM" | "HARD"
 declare type Tag = "SLIDING_WINDOW" | "MATH" | "DYNAMIC_PROGRAMMING" | "ARRAY" | "STRING"
 
 declare type TestCase = {
-	challengeId: string
 	input: string
 	expectedOutput: string
 }
 
-declare type ExampleTestCase = {
-	imageUrl: string
-	input: string
-	expectedOutput: string
+declare type ExampleTestCase = TestCase & {
+	imageUrl?: string
 }
 
 declare type ChallengeDetails = {

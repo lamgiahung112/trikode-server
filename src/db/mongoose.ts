@@ -4,8 +4,6 @@ import mongoose, { Schema, Document, Mongoose } from "mongoose"
 // Define interface for mongoose documents
 interface IUser extends User, Document {}
 
-interface ITestCase extends TestCase, Document {}
-
 interface IChallenge extends Challenge, Document {}
 
 interface IChallengeDetails extends ChallengeDetails, Document {}
@@ -22,13 +20,6 @@ const UserSchema: Schema = new Schema({
 	email: { type: String, unique: true },
 	nickname: { type: String, unique: true },
 	role: String,
-})
-
-const TestCaseSchema: Schema = new Schema({
-	id: String,
-	challengeId: String,
-	input: String,
-	expectedOutput: String,
 })
 
 const ChallengeSchema: Schema = new Schema({
@@ -70,7 +61,6 @@ const UserChallengeProgressSchema: Schema = new Schema({
 
 // Create mongoose models
 const UserModel = mongoose.model<IUser>("User", UserSchema)
-const TestCaseModel = mongoose.model<ITestCase>("TestCase", TestCaseSchema)
 const ChallengeModel = mongoose.model<IChallenge>("Challenge", ChallengeSchema)
 const ChallengeDetailsModel = mongoose.model<IChallengeDetails>(
 	"ChallengeDetails",
@@ -87,7 +77,6 @@ const UserChallengeProgressModel = mongoose.model<IUserChallengeProgress>(
 
 export {
 	UserModel,
-	TestCaseModel,
 	ChallengeModel,
 	ChallengeDetailsModel,
 	ChallengeSubmissionModel,
