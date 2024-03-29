@@ -31,7 +31,7 @@ const CreateChallengeHandler: Handler = async (req, res, next) => {
 		const savedChallenge = await challenge.save()
 
 		const testWriter = fs.createWriteStream(
-			`/tests/${savedChallenge._id.toString()}.json`,
+			`./tests/${savedChallenge._id.toString()}.json`,
 			{
 				autoClose: true,
 			}
