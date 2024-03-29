@@ -4,14 +4,20 @@ import HttpCode from "@src/utils/http-code"
 import { NextFunction, Request, Response } from "express"
 
 const FindChallengeByFilterHandler = async (
-	req: Request<{}, {}, {}, Request.ChallengeFilterRequest>,
+	req: Request<{}, {}, qs.ParsedQs, Record<string, any>>,
 	res: Response,
 	next: NextFunction
 ) => {
 	try {
 		const reqBody = req.query
+		const authenticatedUser = res.locals.authenticatedUser as AuthenticatedUserInfo
 
-		const query = {
+		const query: {
+			title: object
+			difficulty: object
+			tags?: object
+			status?: object
+		} = {
 			title: {
 				$regex: new RegExp(reqBody.title ?? "", "i"),
 			},
@@ -21,14 +27,25 @@ const FindChallengeByFilterHandler = async (
 		}
 
 		if (reqBody.tags && reqBody.tags.length > 0) {
-			Object.defineProperty(query, "tags", {
-				value: {
-					$all: [...reqBody.tags],
-				},
-			})
+			query.tags = {
+				$all: reqBody.tags instanceof Array ? [...reqBody.tags] : [reqBody.tags],
+			}
 		}
 
-		const queriedChallenges = await ChallengeModel.find(query)
+		const queriedChallenges = await ChallengeModel
+			// 	.aggregate([{
+			// 		$lookup: {
+			// 			from: 'userchallengeprogress', // Collection name of UserChallengeProgress model
+			// 			localField: 'id',
+			// 			foreignField: 'challengeId',
+			// 			as: 'progress'
+			// 		},
+			// 		$match: {
+			// 			'progress.userId': authenticatedUser.id,
+			// 			'progress.status': query.status ?? ""
+			// 		}
+			// 	}])
+			.find(query)
 			.skip((reqBody.page - 1) * reqBody.pageSize)
 			.limit(reqBody.pageSize)
 			.exec()

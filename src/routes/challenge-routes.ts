@@ -4,14 +4,12 @@ import {
 	FindChallengeByFilterHandler,
 	UpdateChallengeHandler,
 } from "@src/apis/challenge"
-import { AuthenticationHandler } from "@src/middlewares"
+import { AuthenticationHandler, WeakAuthenticationHandler } from "@src/middlewares"
 
 const challengeRouter = express.Router()
 
-challengeRouter.use(AuthenticationHandler)
-
-challengeRouter.post("/", CreateChallengeHandler)
-challengeRouter.put("/", UpdateChallengeHandler)
-challengeRouter.get("/", FindChallengeByFilterHandler)
+challengeRouter.get("/", WeakAuthenticationHandler, FindChallengeByFilterHandler)
+challengeRouter.post("/", AuthenticationHandler, CreateChallengeHandler)
+challengeRouter.put("/", AuthenticationHandler, UpdateChallengeHandler)
 
 export default challengeRouter
