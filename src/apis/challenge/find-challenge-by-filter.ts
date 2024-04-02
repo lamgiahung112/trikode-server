@@ -78,13 +78,12 @@ const FindChallengeByFilterHandler = async (
 		}
 
 		aggs.push({
-			$skip: (+reqBody.page - 1) * +reqBody.pageSize,
+			$skip: (+reqBody.page - 1) * (+reqBody.pageSize + 0),
 		})
 
 		aggs.push({
 			$limit: +reqBody.pageSize,
 		})
-		console.log(aggs)
 		const queriedChallenges = await ChallengeModel.aggregate(aggs).exec()
 
 		res.locals = {

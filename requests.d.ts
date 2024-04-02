@@ -52,4 +52,8 @@ declare namespace Request {
 		page: number
 		pageSize: number
 	}
+
+	declare type ChallengeDetailsRequest = {
+		titleSlug: string
+	}
 }
