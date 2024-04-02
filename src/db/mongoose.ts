@@ -1,5 +1,5 @@
 // Import mongoose
-import mongoose, { Schema, Document, Mongoose } from "mongoose"
+import mongoose, { Schema, Document, Mongoose, Types } from "mongoose"
 
 // Define interface for mongoose documents
 interface IUser extends User, Document {}
@@ -27,7 +27,7 @@ const ChallengeSchema: Schema = new Schema({
 	title: { type: String, unique: true },
 	difficulty: String,
 	tags: [String],
-	challengeDetails: String,
+	challengeDetails: Types.ObjectId,
 	createdAt: Number,
 	submissionCount: Number,
 	acceptanceCount: Number,
@@ -43,8 +43,8 @@ const ChallengeDetailsSchema: Schema = new Schema({
 })
 
 const ChallengeSubmissionSchema: Schema = new Schema({
-	userId: String,
-	problemId: String,
+	userId: Types.ObjectId,
+	challengeId: Types.ObjectId,
 	code: String,
 	runtime: Number,
 	testcasePassedCount: Number,
@@ -53,8 +53,8 @@ const ChallengeSubmissionSchema: Schema = new Schema({
 })
 
 const UserChallengeProgressSchema: Schema = new Schema({
-	challengeId: String,
-	userId: String,
+	challengeId: Types.ObjectId,
+	userId: Types.ObjectId,
 	status: String,
 	isLiked: Boolean,
 })

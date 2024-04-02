@@ -48,5 +48,8 @@ declare namespace Request {
 		title?: string
 		difficulty?: Difficulty
 		tags?: Tag[]
+		status?: UserChallengeProgressStatus
+		page: number
+		pageSize: number
 	}
 }

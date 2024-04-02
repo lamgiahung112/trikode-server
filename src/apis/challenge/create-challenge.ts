@@ -3,6 +3,7 @@ import ApiError from "@src/utils/api-error"
 import HttpCode from "@src/utils/http-code"
 import { Handler } from "express"
 import fs from "fs"
+import { Types } from "mongoose"
 
 const CreateChallengeHandler: Handler = async (req, res, next) => {
 	try {
@@ -25,7 +26,9 @@ const CreateChallengeHandler: Handler = async (req, res, next) => {
 			submissionCount: 0,
 			acceptanceCount: 0,
 			likeCount: 0,
-			challengeDetails: savedChallengeDetails._id.toString(),
+			challengeDetails: Types.ObjectId.createFromHexString(
+				savedChallengeDetails._id.toString()
+			),
 		})
 
 		const savedChallenge = await challenge.save()
