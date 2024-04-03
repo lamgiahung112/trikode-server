@@ -12,6 +12,6 @@ const challengeRouter = express.Router()
 challengeRouter.get("/", WeakAuthenticationHandler, FindChallengeByFilterHandler)
 challengeRouter.post("/", AuthenticationHandler, CreateChallengeHandler)
 challengeRouter.put("/", AuthenticationHandler, UpdateChallengeHandler)
-challengeRouter.get("/details", GetChallengeDetails)
+challengeRouter.get("/details", WeakAuthenticationHandler, GetChallengeDetails)
 
 export default challengeRouter
