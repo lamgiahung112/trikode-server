@@ -5,6 +5,7 @@ import { ResponseHandler, ErrorHandler } from "./middlewares"
 import dotenv from "dotenv"
 import cors from "cors"
 import fs from "fs"
+import MqService from "./utils/mq-service"
 
 const app = express()
 const port = 3001
@@ -21,6 +22,9 @@ app.use(ResponseHandler)
 app.use(ErrorHandler)
 
 connectDB()
+	.then(() => {
+		MqService.init()
+	})
 	.then(() => {
 		app.listen(port, () => {
 			console.log("LISTENING ON PORT 3001")
