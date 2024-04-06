@@ -1,8 +1,8 @@
 import { ChallengeDetailsModel, ChallengeModel } from "@src/db/mongoose"
 import ApiError from "@src/utils/api-error"
 import HttpCode from "@src/utils/http-code"
+import MqService from "@src/utils/mq-service"
 import { Handler } from "express"
-import fs from "fs"
 
 const UpdateChallengeHandler: Handler = async (req, res, next) => {
 	try {
@@ -30,16 +30,10 @@ const UpdateChallengeHandler: Handler = async (req, res, next) => {
 		await challenge.save()
 		await challengeDetails.save()
 
-		const testWriter = fs.createWriteStream(
-			`/tests/${challenge._id.toString()}.json`,
-			{
-				autoClose: true,
-			}
-		)
-		testWriter.on("error", () => {
-			throw new Error()
+		MqService.sendSaveTestCaseMessage({
+			challengeId: challenge._id.toString(),
+			testcases: reqBody.testcases,
 		})
-		testWriter.write(JSON.stringify(reqBody.testcases))
 
 		next()
 	} catch (err) {
