@@ -45,11 +45,13 @@ const ChallengeDetailsSchema: Schema = new Schema({
 const ChallengeSubmissionSchema: Schema = new Schema({
 	userId: Types.ObjectId,
 	challengeId: Types.ObjectId,
+	isPassed: Boolean,
+	error: String,
 	code: String,
-	runtime: Number,
 	testcasePassedCount: Number,
+	totalTestCases: Number,
+	result: Array<TestCaseResult>,
 	createdAt: Number,
-	status: String,
 })
 
 const UserChallengeProgressSchema: Schema = new Schema({

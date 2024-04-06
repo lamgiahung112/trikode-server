@@ -29,6 +29,5 @@ connectDB()
 		app.listen(port, () => {
 			console.log("LISTENING ON PORT 3001")
 		})
-		fs.mkdirSync("./tests")
 	})
 	.catch(console.log)

@@ -7,7 +7,6 @@ declare global {
 			AMQP_RUN_QUEUE_KEY: string
 			AMQP_RUN_RESULT_QUEUE_KEY: string
 			AMQP_SAVE_QUEUE_KEY: string
-			AMQP_SAVE_RESULT_QUEUE_KEY: string
 		}
 	}
 }

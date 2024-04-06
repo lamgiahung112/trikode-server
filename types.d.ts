@@ -15,6 +15,12 @@ declare type TestCase = {
 	expectedOutput: string
 }
 
+declare type TestCaseResult = {
+	isPassed: boolean
+	time: number
+	output: string
+}
+
 declare type ExampleTestCase = TestCase & {
 	imageUrl?: string
 }
@@ -37,20 +43,16 @@ declare type Challenge = {
 	likeCount: number
 }
 
-declare type ChallengeSubmissionStatus =
-	| "PENDING"
-	| "WRONG_ANSWER"
-	| "TIMEOUT"
-	| "ACCEPTED"
-
 declare type ChallengeSubmission = {
 	userId: string
-	problemId: string
+	challengeId: string
+	isPassed: boolean
+	error: string
 	code: string
-	runtime: number
 	testcasePassedCount: number
+	totalTestCases: number
+	result: TestCaseResult[]
 	createdAt: number
-	status: ChallengeSubmissionStatus
 }
 
 declare type UserChallengeProgressStatus = "NONE" | "ATTEMPTED" | "SOLVED"
