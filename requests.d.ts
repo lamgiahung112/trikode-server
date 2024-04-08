@@ -32,6 +32,11 @@ declare namespace Request {
 		testcases: TestCase[]
 	}
 
+	declare type SubmitChallengeCodeRequest = {
+		challengeId: string
+		code: string
+	}
+
 	declare type UpdateChallengeRequest = {
 		_id: string
 		title: string

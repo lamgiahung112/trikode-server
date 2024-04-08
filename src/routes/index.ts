@@ -4,5 +4,5 @@ import challengeRouter from "./challenge-routes"
 
 export default function initRoute(app: Application) {
 	app.use("/api/auth", authRouter)
-	app.use("/api/challenge", challengeRouter)
+	app.use("/api/challenges", challengeRouter)
 }

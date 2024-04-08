@@ -46,6 +46,7 @@ const ChallengeSubmissionSchema: Schema = new Schema({
 	userId: Types.ObjectId,
 	challengeId: Types.ObjectId,
 	isPassed: Boolean,
+	isPending: Boolean,
 	error: String,
 	code: String,
 	testcasePassedCount: Number,

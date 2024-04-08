@@ -47,6 +47,7 @@ declare type ChallengeSubmission = {
 	userId: string
 	challengeId: string
 	isPassed: boolean
+	isPending: boolean
 	error: string
 	code: string
 	testcasePassedCount: number
