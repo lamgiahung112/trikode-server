@@ -15,11 +15,16 @@ class MqService {
 		}
 		this._mqInstance = await amqplib.connect(process.env.AMQP_URL)
 
+		this._mqInstance.on("error", async (err) => {
+			console.log(err)
+			await this._mqInstance.close()
+			this._mqInstance = await amqplib.connect(process.env.AMQP_URL)
+		})
+
 		const consumerChannel = await this._mqInstance.createChannel()
 		consumerChannel.assertQueue(process.env.AMQP_RUN_RESULT_QUEUE_KEY)
 
 		consumerChannel.consume(process.env.AMQP_RUN_RESULT_QUEUE_KEY, async (msg) => {
-			console.log(msg?.content.toString())
 			const submissionData = JSON.parse(
 				msg!.content.toString()
 			) as SubmissionResultMessage
@@ -38,7 +43,7 @@ class MqService {
 			submission?.set("error", submissionData.error)
 			submission?.set("isPassed", submissionData.isPassed)
 			submission?.set("testcasePassedCount", submissionData.testcasePassedCount)
-			submission?.set("totalTestCases", submission.totalTestCases)
+			submission?.set("totalTestCases", submissionData.totalTestCases)
 
 			await challenge?.save()
 			await submission?.save()
