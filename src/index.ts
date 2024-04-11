@@ -23,7 +23,7 @@ app.use(ErrorHandler)
 
 connectDB()
 	.then(() => {
-		MqService.init()
+		return MqService.init()
 	})
 	.then(() => {
 		app.listen(port, () => {

@@ -2,7 +2,7 @@ import { ChallengeModel } from "@src/db/mongoose"
 import ApiError from "@src/utils/api-error"
 import HttpCode from "@src/utils/http-code"
 import { NextFunction, Request, Response } from "express"
-import { PipelineStage } from "mongoose"
+import { PipelineStage, Types } from "mongoose"
 
 const FindChallengeByFilterHandler = async (
 	req: Request<{}, {}, qs.ParsedQs, Record<string, any>>,
@@ -25,7 +25,14 @@ const FindChallengeByFilterHandler = async (
 								$expr: {
 									$and: [
 										{ $eq: ["$challengeId", "$$challengeId"] },
-										{ $eq: ["$userId", authenticatedUser.id] },
+										{
+											$eq: [
+												"$userId",
+												Types.ObjectId.createFromHexString(
+													authenticatedUser.id
+												),
+											],
+										},
 									],
 								},
 							},

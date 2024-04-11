@@ -1,4 +1,4 @@
-import { ChallengeSubmissionModel } from "@src/db/mongoose"
+import { ChallengeSubmissionModel, UserChallengeProgressModel } from "@src/db/mongoose"
 import ApiError from "@src/utils/api-error"
 import HttpCode from "@src/utils/http-code"
 import MqService from "@src/utils/mq-service"
@@ -18,6 +18,20 @@ const SubmitChallengeCodeHandler: Handler = async (req, res, next) => {
 		})
 
 		const savedSubmission = await submission.save()
+		const userChallengeProgress =
+			(await UserChallengeProgressModel.findOne({
+				userId: id,
+				challengeId: reqBody.challengeId,
+			})) ??
+			new UserChallengeProgressModel({
+				userId: id,
+				challengeId: reqBody.challengeId,
+			})
+
+		if (userChallengeProgress.status !== "SOLVED") {
+			userChallengeProgress.set("status", "ATTEMPTED")
+		}
+		await userChallengeProgress.save()
 
 		MqService.sendRunCodeMessage({
 			challengeId: reqBody.challengeId,

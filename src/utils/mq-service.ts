@@ -1,4 +1,8 @@
-import { ChallengeModel, ChallengeSubmissionModel } from "@src/db/mongoose"
+import {
+	ChallengeModel,
+	ChallengeSubmissionModel,
+	UserChallengeProgressModel,
+} from "@src/db/mongoose"
 import amqplib from "amqplib"
 
 type SubmissionResultMessage = Omit<ChallengeSubmission, "userId" | "code"> & {
@@ -33,6 +37,16 @@ class MqService {
 				submissionData.submissionId
 			)
 			const challenge = await ChallengeModel.findById(submissionData.challengeId)
+
+			if (submissionData.isPassed) {
+				const challengeProgress = await UserChallengeProgressModel.findOne({
+					userId: submission?.userId,
+					challengeId: submission?.challengeId,
+				})
+				challengeProgress?.set("status", "SOLVED")
+				await challengeProgress?.save()
+			}
+
 			challenge?.set("submissionCount", challenge.submissionCount + 1)
 			challenge?.set(
 				"acceptanceCount",
